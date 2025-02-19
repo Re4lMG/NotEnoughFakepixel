@@ -26,7 +26,6 @@ public class MinibossAlert {
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private final Set<UUID> detectedMinibosses = new HashSet<>();
-    private static final double DETECTION_RADIUS = 10.0;
 
     private static String displayText = "";
     private static long endTime = 0;
@@ -35,25 +34,18 @@ public class MinibossAlert {
     public void onRenderWorldLast(RenderWorldLastEvent event) {
         if (!(ScoreboardUtils.currentGamemode == Gamemode.SKYBLOCK) || mc.thePlayer == null) return;
 
-        Set<UUID> currentMinibossUuids = new HashSet<>();
-
         for (Entity entity : mc.theWorld.loadedEntityList) {
-            if (mc.thePlayer.getDistanceToEntity(entity) > DETECTION_RADIUS) continue;
+            if (entity.getUniqueID() != null && detectedMinibosses.contains(entity.getUniqueID())) continue;
 
             String entityName = entity.getDisplayName().getUnformattedText();
             for (String keyword : MINIBOSS) {
                 if (entityName.contains(keyword)) {
-                    currentMinibossUuids.add(entity.getUniqueID());
-
-                    if (!detectedMinibosses.contains(entity.getUniqueID())) {
-                        detectedMinibosses.add(entity.getUniqueID());
-                        triggerAlerts();
-                    }
+                    detectedMinibosses.add(entity.getUniqueID());
+                    triggerAlerts();
                     break;
                 }
             }
         }
-        detectedMinibosses.retainAll(currentMinibossUuids);
     }
 
     private void triggerAlerts() {

@@ -103,7 +103,7 @@ public class FirePillarDisplay {
         GlStateManager.scale(4.0F, 4.0F, 4.0F);
         int textWidth = fr.getStringWidth(displayText);
         int x = (screenWidth / 8) - (textWidth / 2);
-        int y = (screenHeight / 8) - 10;
+        int y = (screenHeight / 8) - 30;
         fr.drawStringWithShadow(displayText, x, y, 0xFF5555);
         GlStateManager.popMatrix();
     }

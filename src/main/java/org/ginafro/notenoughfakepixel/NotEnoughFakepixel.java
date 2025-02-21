@@ -102,6 +102,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new MuteIrrelevantMessages());
         MinecraftForge.EVENT_BUS.register(new SpiritLeapHandler());
         MinecraftForge.EVENT_BUS.register(new SpiritLeapHandler.ChestGuiOverlayHandler());
+        MinecraftForge.EVENT_BUS.register(new MiscDungFeatures());
 
         // Mining
         MinecraftForge.EVENT_BUS.register(new MiningOverlay());
@@ -137,6 +138,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new WarpsShortcut());
         MinecraftForge.EVENT_BUS.register(new DisableEndermanTeleport());
         MinecraftForge.EVENT_BUS.register(new HideFlamingFists());
+        MinecraftForge.EVENT_BUS.register(new MiscFeatures());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());

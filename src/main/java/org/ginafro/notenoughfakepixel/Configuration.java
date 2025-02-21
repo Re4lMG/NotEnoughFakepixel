@@ -198,8 +198,6 @@ public class Configuration extends Config {
     @Switch(name = "Announces Leaped to Player in party chat!", category = DUNGEONS, subcategory = "QOL")
     public static boolean dungeonsLeapAnnounce = true;
 
-    @Switch(name = "Highlights chests inside Croesus", category = DUNGEONS, subcategory = "QOL")
-    public static boolean dungeonsCroesus = true;
     @Switch(name = "Announces when Blood room is done spawning", category = DUNGEONS, subcategory = "QOL")
     public static boolean dungeonsBloodReady = true;
 

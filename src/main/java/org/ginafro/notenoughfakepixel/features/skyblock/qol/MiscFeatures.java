@@ -33,15 +33,15 @@ public class MiscFeatures {
             Block block = Minecraft.getMinecraft().theWorld.getBlockState(event.pos).getBlock();
 
             if (flowerPlaceable.contains(block)) {
-                if (Configuration.qolBlockPlacingFlowers && item.getDisplayName().contains("Flower of Truth")) {
+                if (Configuration.qolBlockPlacingItems && item.getDisplayName().contains("Flower of Truth")) {
                     event.setCanceled(true);
                 }
-                if (Configuration.qolBlockPlacingFlowers && item.getDisplayName().contains("Spirit Sceptre")) {
+                if (Configuration.qolBlockPlacingItems && item.getDisplayName().contains("Spirit Sceptre")) {
                     event.setCanceled(true);
                 }
             }
 
-            if (Configuration.qolBlockPlacingFlowers && item.getItem() == Item.getItemFromBlock(Blocks.hopper) && item.getDisplayName().contains("Weird Tuba")) {
+            if (Configuration.qolBlockPlacingItems && item.getItem() == Item.getItemFromBlock(Blocks.hopper) && item.getDisplayName().contains("Weird Tuba")) {
                 event.setCanceled(true);
             }
         }

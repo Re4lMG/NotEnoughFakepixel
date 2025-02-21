@@ -115,6 +115,9 @@ public class Configuration extends Config {
     @Switch(name = "Disable Enderman Teleport", category = QUALITY_OF_LIFE)
     public static boolean qolDisableEnderManTeleport = true;
 
+    @Switch(name = "Block placing items", category = QUALITY_OF_LIFE)
+    public static boolean qolBlockPlacingItems = true;
+
     @Switch(name = "Wardrobe Shortcut" , category = QUALITY_OF_LIFE, subcategory = "Shortcuts")
     public static boolean qolShortcutWardrobe = true;
     @KeyBind(name = "Wardrobe Shortcut Key", category = QUALITY_OF_LIFE, subcategory = "Shortcuts")
@@ -194,6 +197,11 @@ public class Configuration extends Config {
     public static boolean dungeonsSpiritLeapGUI = true;
     @Switch(name = "Announces Leaped to Player in party chat!", category = DUNGEONS, subcategory = "QOL")
     public static boolean dungeonsLeapAnnounce = true;
+
+    @Switch(name = "Highlights chests inside Croesus", category = DUNGEONS, subcategory = "QOL")
+    public static boolean dungeonsCroesus = true;
+    @Switch(name = "Announces when Blood room is done spawning", category = DUNGEONS, subcategory = "QOL")
+    public static boolean dungeonsBloodReady = true;
 
     @Switch(name = "Dungeons Map" , category = DUNGEONS, subcategory = "Dungeon Map")
     public static boolean dungeonsMap = true;

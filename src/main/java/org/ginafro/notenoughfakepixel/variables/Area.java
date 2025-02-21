@@ -16,7 +16,7 @@ public enum Area {
     HIGH_LEVEL("High Level"),
     WILDERNESS("Wilderness"),
     FARM("Farm"),
-    AREA("Coal Mine"),
+    COAL("Coal Mine"),
     BARN("The Barn"),
     DESERT("Desert Settlement"),
     OASIS("Oasis"),

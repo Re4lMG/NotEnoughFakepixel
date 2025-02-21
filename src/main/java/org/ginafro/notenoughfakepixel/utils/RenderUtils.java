@@ -66,7 +66,27 @@ public class RenderUtils {
 
     private static final ResourceLocation beaconBeam = new ResourceLocation("textures/entity/beacon_beam.png");
 
-    public static void renderBeaconBeam(
+    public static void renderBeaconBeam(BlockPos block, int rgb, float alphaMult, float partialTicks) {
+        double viewerX;
+        double viewerY;
+        double viewerZ;
+
+        Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+        viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partialTicks;
+        viewerY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partialTicks;
+        viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
+
+
+        double x = block.getX() - viewerX;
+        double y = block.getY() - viewerY;
+        double z = block.getZ() - viewerZ;
+
+        double distSq = x * x + y * y + z * z;
+
+        RenderUtils.renderBeaconBeam(x, y, z, rgb, 1.0f, partialTicks, distSq > 10 * 10);
+    }
+
+    private static void renderBeaconBeam(
             double x, double y, double z, int rgb, float alphaMult,
             float partialTicks, Boolean disableDepth
     ) {

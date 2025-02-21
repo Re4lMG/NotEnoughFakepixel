@@ -115,9 +115,6 @@ public class Configuration extends Config {
     @Switch(name = "Disable Enderman Teleport", category = QUALITY_OF_LIFE)
     public static boolean qolDisableEnderManTeleport = true;
 
-    @Switch(name = "Block placing Flower of truth & Spirit sceptre", category = QUALITY_OF_LIFE)
-    public static boolean qolBlockPlacingFlowers = true;
-
     @Switch(name = "Wardrobe Shortcut" , category = QUALITY_OF_LIFE, subcategory = "Shortcuts")
     public static boolean qolShortcutWardrobe = true;
     @KeyBind(name = "Wardrobe Shortcut Key", category = QUALITY_OF_LIFE, subcategory = "Shortcuts")
@@ -197,11 +194,6 @@ public class Configuration extends Config {
     public static boolean dungeonsSpiritLeapGUI = true;
     @Switch(name = "Announces Leaped to Player in party chat!", category = DUNGEONS, subcategory = "QOL")
     public static boolean dungeonsLeapAnnounce = true;
-
-    @Switch(name = "Shows a title once Blood room is finished spawning mobs", category = DUNGEONS, subcategory = "QOL")
-    public static boolean dungeonsBloodReady = true;
-    @Switch(name = "Croesus highlight unopened chests", category = DUNGEONS, subcategory = "QOL")
-    public static boolean dungeonsCroesus = true;
 
     @Switch(name = "Dungeons Map" , category = DUNGEONS, subcategory = "Dungeon Map")
     public static boolean dungeonsMap = true;
@@ -288,8 +280,6 @@ public class Configuration extends Config {
     public static float dungeonsScaleItemDrop = 3.5f;
     @Page(name = "Score Overlay Options" , category = DUNGEONS, subcategory = "Score & Secrets", location = PageLocation.BOTTOM)
     public static ScoreOverlayPage dungeonsScoreOverlayPage = new ScoreOverlayPage();
-    @Switch(name = "Secret Click Sound" , category = DUNGEONS, subcategory = "Score & Secrets")
-    public static boolean dungeonsSecretClickSounds = true;
 
 
     // Diana
@@ -357,8 +347,6 @@ public class Configuration extends Config {
     public static OneColor slayerBeaconColor = new OneColor(128, 0, 128);
     @Switch(name = "Display Blaze Pillar Title" , category = SLAYER , subcategory = "Inferno Demonlord", description = "Displays a text on the screen when a pillar is nearby.")
     public static boolean slayerFirePillarDisplay = true;
-    //@Switch(name = "Display Blaze attunements" , category = SLAYER , subcategory = "Inferno Demonlord")
-    //public static boolean slayerBlazeAttunements = true;
 
     // Enchanting
     @Header(text = "Experimentation Table" , category = EXPERIMENTATION , size = 2)

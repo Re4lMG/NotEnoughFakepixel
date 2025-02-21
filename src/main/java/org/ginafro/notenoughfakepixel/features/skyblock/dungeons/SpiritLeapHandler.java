@@ -24,7 +24,6 @@ import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.lwjgl.input.Mouse;

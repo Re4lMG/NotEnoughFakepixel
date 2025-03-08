@@ -8,11 +8,14 @@ import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StringUtils;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.events.Handlers.ScoreboardHandler;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -22,16 +25,33 @@ import org.ginafro.notenoughfakepixel.utils.Waypoint;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static org.ginafro.notenoughfakepixel.Configuration.slayerBeaconColor;
 
 public class VoidgloomSeraph {
     ArrayList<EntityFallingBlock> fallingBlocks = new ArrayList<>();
     ArrayList<Waypoint> waypoints = new ArrayList<>();
+    public static boolean isBoss = false;
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.side == net.minecraftforge.fml.relauncher.Side.CLIENT) {
+            List<String> sidebarLines = ScoreboardHandler.getSidebarLines();
+
+            // Loop through the sidebar lines and check for "Slay the boss!"
+            for (String line : sidebarLines) {
+                if (line.contains("Slay the boss!")) {
+                    isBoss = true;
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (checkEssentials()) return;
+        if (isBoss) {
         AxisAlignedBB bb = Minecraft.getMinecraft().thePlayer.getEntityBoundingBox().expand(20, 20, 20);
         Collection<EntityFallingBlock> entities = Minecraft.getMinecraft().theWorld.getEntitiesWithinAABB(EntityFallingBlock.class, bb);
         ArrayList<Boolean> fallingBlocksFound = new ArrayList<>(fallingBlocks.size());
@@ -63,12 +83,15 @@ public class VoidgloomSeraph {
             fallingBlocksFound.remove((int)i);
         }
     }
+    }
 
     @SubscribeEvent
     public void onRenderLast(RenderWorldLastEvent event) {
         if (checkEssentials()) return;
         if (!Configuration.slayerShowBeaconPath) return;
+        if (isBoss) {
         drawWaypoints(event.partialTicks);
+        }
     }
 
     @SubscribeEvent
@@ -134,5 +157,18 @@ public class VoidgloomSeraph {
         return (Minecraft.getMinecraft().thePlayer == null) ||
                 (!ScoreboardUtils.currentGamemode.isSkyblock()) ||
                 (!ScoreboardUtils.currentLocation.isEnd());
+    }
+
+
+    @SubscribeEvent
+    public void onChat(ClientChatReceivedEvent event) {
+        if (Configuration.slayerShowBeaconPath && ScoreboardUtils.currentGamemode.isSkyblock() && ScoreboardUtils.currentLocation.isEnd()) {
+            String message = StringUtils.stripControlCodes(event.message.getUnformattedText());
+
+            if (message.contains("SLAYER QUEST COMPLETE!")) {
+                fallingBlocks.clear();
+                waypoints.clear();
+            }
+        }
     }
 }

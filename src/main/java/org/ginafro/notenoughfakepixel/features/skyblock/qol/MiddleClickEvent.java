@@ -19,42 +19,45 @@ public class MiddleClickEvent {
             "Experimentation Table",
             "Chronomatron",
             "Ultrasequencer",
-            "Superpairs",
+            "Superpairs"
+    );
 
+    private static List<String> disabledChestNames = Arrays.asList(
             "What starts with '",
             "Correct all the panes!",
             "Complete the maze!",
             "Click in order!",
             "Select all the "
-        );
+    );
 
     @SubscribeEvent
     public void onMouseClick(GuiScreenEvent.MouseInputEvent.Pre event) {
         if (!Configuration.qolMiddleClickChests) return;
         if (Mouse.getEventButton() != 0 || !Mouse.getEventButtonState()) return;
 
-        // Check if the current screen is a chest GUI
         if (!(mc.currentScreen instanceof GuiChest)) return;
 
         GuiChest chestGui = (GuiChest) mc.currentScreen;
         ContainerChest container = (ContainerChest) chestGui.inventorySlots;
 
-        // Get the chest's name
         String currentChestName = container.getLowerChestInventory().getDisplayName().getUnformattedText();
 
-        // Replace with your specific chest name condition
+        if (Configuration.dungeonsCustomGuiStartsWith || Configuration.dungeonsCustomGuiClickIn || Configuration.dungeonsCustomGuiColors || Configuration.dungeonsCustomGuiPanes) {
+            for (String disabledName : disabledChestNames) {
+                if (currentChestName.startsWith(disabledName)) {
+                    return;
+                }
+            }
+        }
+
         for (String chestName : chestNames){
             if (currentChestName.startsWith(chestName)) {
-                // Check if the left mouse button is clicked
 
-                // Cancel the normal click event
                 event.setCanceled(true);
 
-                // Simulate a middle-click
                 int slot = chestGui.getSlotUnderMouse() != null ? chestGui.getSlotUnderMouse().slotNumber : -1;
 
                 if (slot >= 0) {
-                    // Perform the middle-click action
                     mc.playerController.windowClick(
                             container.windowId,  // The window ID of the chest
                             slot,               // Slot clicked

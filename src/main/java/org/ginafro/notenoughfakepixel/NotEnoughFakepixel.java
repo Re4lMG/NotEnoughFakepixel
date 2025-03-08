@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import org.ginafro.notenoughfakepixel.commands.CopyCommand;
 import org.ginafro.notenoughfakepixel.commands.NefCommand;
 import org.ginafro.notenoughfakepixel.features.duels.KDCounter;
 import org.ginafro.notenoughfakepixel.features.skyblock.chocolate.ChocolateFactory;
@@ -23,8 +24,8 @@ import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.BatMobDisp
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.FelMobDisplay;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.LividDisplay;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.StarredMobDisplay;
-import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.puzzles.ThreeWeirdos;
-import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.puzzles.WaterSolver;
+//import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.puzzles.BoulderSolver;
+import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.puzzles.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.score.DungeonClearedNotifier;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.score.ScoreManager;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.score.ScoreOverlay;
@@ -47,14 +48,21 @@ import java.io.File;
 @Mod(modid = "notenoughfakepixel", useMetadata=true)
 public class NotEnoughFakepixel {
 
+    public static final File nefFolder = new File(Minecraft.getMinecraft().mcDataDir, "NotEnoughFakepixel");
+
     public static Configuration config;
     public File file;
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+
+        if (!nefFolder.exists()) {
+            nefFolder.mkdirs();
+        }
         config = new Configuration();
         //ClientCommandHandler.instance.registerCommand(new TestCommand());
         //ClientCommandHandler.instance.registerCommand(new SlayerInfoCommand());
         ClientCommandHandler.instance.registerCommand(new NefCommand());
+        ClientCommandHandler.instance.registerCommand(new CopyCommand());
 
         MinecraftForge.EVENT_BUS.register(this);
         registerModEvents();
@@ -86,6 +94,9 @@ public class NotEnoughFakepixel {
 
         MinecraftForge.EVENT_BUS.register(new ThreeWeirdos());
         MinecraftForge.EVENT_BUS.register(new WaterSolver());
+        MinecraftForge.EVENT_BUS.register(new BoulderSolver());
+        MinecraftForge.EVENT_BUS.register(new SilverFishSolver());
+        MinecraftForge.EVENT_BUS.register(new TeleportMazeSolver());
 
         MinecraftForge.EVENT_BUS.register(new WitherBloodKeysTracers());
         MinecraftForge.EVENT_BUS.register(new StarredMobDisplay());
@@ -103,6 +114,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new SpiritLeapHandler());
         MinecraftForge.EVENT_BUS.register(new SpiritLeapHandler.ChestGuiOverlayHandler());
         MinecraftForge.EVENT_BUS.register(new MiscDungFeatures());
+        MinecraftForge.EVENT_BUS.register(new TerminalWaypoints());
 
         // Mining
         MinecraftForge.EVENT_BUS.register(new MiningOverlay());
@@ -130,6 +142,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new SoundRemover());
         MinecraftForge.EVENT_BUS.register(new ScrollableTooltips());
         //MinecraftForge.EVENT_BUS.register(new SlotLocking());
+        MinecraftForge.EVENT_BUS.register(new FairySouls());
         MinecraftForge.EVENT_BUS.register(new StorageOverlay.StorageEvent());
         MinecraftForge.EVENT_BUS.register(new AutoOpenMaddox());
         MinecraftForge.EVENT_BUS.register(new MidasStaff());
@@ -153,6 +166,9 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new VoidgloomSeraph());
         MinecraftForge.EVENT_BUS.register(new FirePillarDisplay());
         MinecraftForge.EVENT_BUS.register(new MinibossAlert());
+        MinecraftForge.EVENT_BUS.register(new BlazeAttunements());
+        //MinecraftForge.EVENT_BUS.register(new SlayerHealthDisplay());
+        MinecraftForge.EVENT_BUS.register(new SlayerTimer());
 
         // Parsers
         MinecraftForge.EVENT_BUS.register(new TablistParser());

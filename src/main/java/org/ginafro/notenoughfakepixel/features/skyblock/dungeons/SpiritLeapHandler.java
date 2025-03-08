@@ -183,8 +183,6 @@ public class SpiritLeapHandler {
             int screenWidth = event.gui.width;
             int screenHeight = event.gui.height;
 
-            Gui.drawRect(0, 0, screenWidth, screenHeight, 0x88000000);
-
             final int boxWidth = 256;
             final int boxHeight = 72;
             final int padding = 32;
@@ -214,8 +212,8 @@ public class SpiritLeapHandler {
                 pd.boxWidth = boxWidth;
                 pd.boxHeight = boxHeight;
 
-                Gui.drawRect(x, y, x + boxWidth, y + boxHeight, 0xFF202020);
-                int borderColor = 0xFFFFFFFF;
+                Gui.drawRect(x, y, x + boxWidth, y + boxHeight, 0x80000000);
+                int borderColor = 0xFF202020;
                 Gui.drawRect(x, y, x + boxWidth, y + 1, borderColor);
                 Gui.drawRect(x, y + boxHeight - 1, x + boxWidth, y + boxHeight, borderColor);
                 Gui.drawRect(x, y, x + 1, y + boxHeight, borderColor);
@@ -237,10 +235,10 @@ public class SpiritLeapHandler {
 
                 GL11.glPushMatrix();
                 GL11.glScalef(2.0F, 2.0F, 1.0F);
-                mc.fontRendererObj.drawString(name, (int) (nameX / 2), (int) (nameY / 2), color);
+                mc.fontRendererObj.drawStringWithShadow(name, (int) (nameX / 2), (int) (nameY / 2), color);
                 GL11.glPopMatrix();
 
-                mc.fontRendererObj.drawString(className, classX, classY, 0xAAAAAA);
+                mc.fontRendererObj.drawStringWithShadow(className, classX, classY, 0xAAAAAA);
             }
         }
 

@@ -38,6 +38,7 @@ public class MiscDungFeatures {
                             1.0F,
                             false
                     );
+                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc Blood Ready!");
                 }
             }
         }

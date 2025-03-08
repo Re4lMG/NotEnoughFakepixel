@@ -36,7 +36,12 @@ public class SPlusNotifier {
                 Minecraft.getMinecraft().ingameGUI.displayTitle(EnumChatFormatting.GOLD + "S+", "", 2, 100, 2);
             }
             if (Configuration.dungeonsSPlusMessage) {
-                Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc [NEF] S+ virtually reached, get 100% completion and enter portal!");
+                String customMessage = Configuration.dungeonsSPlusCustom.trim();
+                if (!customMessage.isEmpty()) {
+                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc " + customMessage);
+                } else {
+                    Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc [NEF] S+ virtually reached, get 100% completion and enter portal!");
+                }
             }
             remindedSPlus = true;
         }

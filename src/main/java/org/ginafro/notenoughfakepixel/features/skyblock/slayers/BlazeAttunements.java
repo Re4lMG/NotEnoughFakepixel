@@ -1,107 +1,114 @@
 package org.ginafro.notenoughfakepixel.features.skyblock.slayers;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.monster.EntityBlaze;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
+import org.ginafro.notenoughfakepixel.utils.RenderUtils;
+import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 
-import net.minecraft.util.AxisAlignedBB;
-import org.lwjgl.opengl.GL11;
-import java.awt.Color;
+import java.awt.*;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BlazeAttunements {
 
     @SubscribeEvent
-    public void onRenderLast(RenderWorldLastEvent event) {
-        if (!Configuration.dungeonsStarredMobs) return;
+    public void onRenderWorld(RenderWorldLastEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.thePlayer == null) return;
-        if (mc.theWorld == null) return;
+        if (mc.theWorld == null || mc.thePlayer == null) return;
 
-        WorldClient world = mc.theWorld;
+        if (!Configuration.slayerBlazeAttunements) return;
+        if (!ScoreboardUtils.currentGamemode.isSkyblock() || !ScoreboardUtils.currentLocation.isCrimson()) return;
 
-        world.loadedEntityList.forEach(entity -> {
-            if (entity == null) return;
-            if (entity.getName() == null) return;
-            if (!(entity instanceof EntityArmorStand)) return;
+        for (Entity entity : mc.theWorld.loadedEntityList) {
+            if (entity instanceof EntityArmorStand) {
+                EntityArmorStand armorStand = (EntityArmorStand) entity;
+                String displayName = armorStand.getDisplayName().getUnformattedText();
 
-            // Remove formatting codes (including bold) and convert to lowercase
-            String unformattedName = entity.getName().replaceAll("(?i)§[0-9A-FK-OR]", "").toLowerCase();
+                Matcher matcher = COLOR_PATTERN.matcher(displayName);
+                if (matcher.find()) {
+                    String attunement = matcher.group().toUpperCase();
 
-            Color color;
-            if (unformattedName.contains("auric")) {
-                color = new Color(0x80FFFF00, true); // Yellow with transparency
-            } else if (unformattedName.contains("crystal")) {
-                color = new Color(0x8018FFFF, true); // Light Blue with transparency
-            } else if (unformattedName.contains("ashen")) {
-                color = new Color(0x80808080, true); // Gray with transparency
-            } else if (unformattedName.contains("spirit")) {
-                color = new Color(0x80FFFFFF, true); // White with transparency
-            } else {
-                return;
+                    Entity entityBelow = getEntityBelow(armorStand, 2.5f);
+                    if (entityBelow instanceof EntityLivingBase) {
+                        EntityLivingBase livingEntity = (EntityLivingBase) entityBelow;
+
+                        boolean isValidEntity = livingEntity instanceof EntityBlaze ||
+                                livingEntity instanceof EntityPigZombie ||
+                                (livingEntity instanceof EntitySkeleton && ((EntitySkeleton) livingEntity).getSkeletonType() == 1);
+
+                        if (isValidEntity) {
+                            boolean allowed = false;
+                            if (livingEntity instanceof EntitySkeleton && ((EntitySkeleton) livingEntity).getSkeletonType() == 1) { // Wither Skeleton
+                                allowed = attunement.equals("SPIRIT") || attunement.equals("CRYSTAL");
+                            } else if (livingEntity instanceof EntityPigZombie) { // Pigman
+                                allowed = attunement.equals("ASHEN") || attunement.equals("AURIC");
+                            } else if (livingEntity instanceof EntityBlaze) {
+                                allowed = true;
+                            }
+
+                            if (allowed) {
+                                int color = getColorForAttunement(attunement);
+
+                                double x = entityBelow.lastTickPosX + (entityBelow.posX - entityBelow.lastTickPosX) * event.partialTicks;
+                                double y = entityBelow.lastTickPosY + (entityBelow.posY - entityBelow.lastTickPosY) * event.partialTicks;
+                                double z = entityBelow.lastTickPosZ + (entityBelow.posZ - entityBelow.lastTickPosZ) * event.partialTicks;
+
+                                AxisAlignedBB aabb = entityBelow.getEntityBoundingBox()
+                                        .offset(x - entityBelow.posX, y - entityBelow.posY, z - entityBelow.posZ)
+                                        .expand(0.1, 0.1, 0.1);
+                                RenderUtils.drawFilledBoundingBoxEntity(aabb, 0.8f, new Color(color, true), event.partialTicks);
+                            }
+                        }
+                    }
+                }
             }
-
-            // Create a bounding box of player size (0.6 width, 1.8 height) centered on the entity's position
-            double width = 0.6;
-            double height = 1.8;
-            double halfWidth = width / 2.0;
-            AxisAlignedBB bb = new AxisAlignedBB(
-                    entity.posX - halfWidth,
-                    entity.posY,
-                    entity.posZ - halfWidth,
-                    entity.posX + halfWidth,
-                    entity.posY + height,
-                    entity.posZ + halfWidth
-            );
-
-            // Render the filled bounding box using RenderUtils
-            drawFilledBB(bb, color.getRGB());
-        });
+        }
     }
-    private void drawFilledBB(AxisAlignedBB bb, int color) {
-        // Extract alpha, red, green, and blue components
-        float a = (float) ((color >> 24) & 0xFF) / 255F;
-        float r = (float) ((color >> 16) & 0xFF) / 255F;
-        float g = (float) ((color >> 8) & 0xFF) / 255F;
-        float b = (float) (color & 0xFF) / 255F;
 
-        // Set up OpenGL state for transparency and disable textures for a flat color
-        GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
-        GlStateManager.disableDepth();
-        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-        GlStateManager.color(r, g, b, a);
+    private static final Pattern COLOR_PATTERN = Pattern.compile("ASHEN|SPIRIT|CRYSTAL|AURIC");
 
-        // Use the Tessellator to draw the box as quads
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+    private static int getColorForAttunement(String attunement) {
+        switch (attunement) {
+            case "ASHEN":
+                return Color.DARK_GRAY.getRGB();
+            case "SPIRIT":
+                return Color.WHITE.getRGB();
+            case "CRYSTAL":
+                return Color.CYAN.getRGB();
+            case "AURIC":
+                return Color.YELLOW.getRGB();
+            default:
+                return -1;
+        }
+    }
 
-        // Bottom face
-        worldRenderer.pos(bb.minX, bb.minY, bb.minZ).endVertex();
-        worldRenderer.pos(bb.maxX, bb.minY, bb.minZ).endVertex();
-        worldRenderer.pos(bb.maxX, bb.minY, bb.maxZ).endVertex();
-        worldRenderer.pos(bb.minX, bb.minY, bb.maxZ).endVertex();
+    private static Entity getEntityBelow(Entity armorStand, float height) {
+        double x = armorStand.posX;
+        double y = armorStand.posY - height;
+        double z = armorStand.posZ;
+        AxisAlignedBB aabb = new AxisAlignedBB(
+                x - 0.5, y, z - 0.5, // Lower bounds
+                x + 0.5, armorStand.posY, z + 0.5 // Upper bounds
+        );
 
-        // Top face
-        worldRenderer.pos(bb.minX, bb.maxY, bb.minZ).endVertex();
-        worldRenderer.pos(bb.maxX, bb.maxY, bb.minZ).endVertex();
-        worldRenderer.pos(bb.maxX, bb.maxY, bb.maxZ).endVertex();
-        worldRenderer.pos(bb.minX, bb.maxY, bb.maxZ).endVertex();
-
-        // You can also add the side faces here if you wish to fill the entire box.
-        tessellator.draw();
-
-        // Restore OpenGL state
-        GlStateManager.enableDepth();
-        GlStateManager.disableBlend();
-        GlStateManager.enableTexture2D();
+        // Get the first valid entity below the armor stand
+        List<Entity> entitiesBelow = armorStand.worldObj.getEntitiesWithinAABBExcludingEntity(armorStand, aabb);
+        for (Entity entity : entitiesBelow) {
+            if (entity instanceof EntityBlaze || entity instanceof EntityPigZombie ||
+                    (entity instanceof EntitySkeleton && ((EntitySkeleton) entity).getSkeletonType() == 1)) {
+                return entity;
+            }
+        }
+        return null;
     }
 }

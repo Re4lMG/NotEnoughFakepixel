@@ -43,48 +43,48 @@ public class FairySouls {
     private String island;
     @SubscribeEvent
     public void onRender(RenderWorldLastEvent e){
-        if(ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
-        if(!Configuration.fairysouls) return;
+        if (ScoreboardUtils.currentGamemode != Gamemode.SKYBLOCK) return;
+        if (!Configuration.fairySoulWaypoints) return;
         Location currentIsland = ScoreboardUtils.currentLocation;
         List<String> souls = new ArrayList<>();
-            if(currentIsland == Location.HUB){
+            if (currentIsland == Location.HUB) {
                 souls = FileUtils.getAllSouls().locations.get("hub");
                 island = "hub";
             }
-            if(currentIsland == Location.SPIDERS_DEN){
+            if (currentIsland == Location.SPIDERS_DEN) {
                 souls = FileUtils.getAllSouls().locations.get("spider");
                 island = "spider";
             }
-            if(currentIsland == Location.CRIMSON_ISLE){
+            if (currentIsland == Location.CRIMSON_ISLE) {
                 souls = FileUtils.getAllSouls().locations.get("crimson");
                 island = "crimson";
             }
-            if(currentIsland == Location.THE_END){
+            if (currentIsland == Location.THE_END) {
                 souls = FileUtils.getAllSouls().locations.get("end");
                 island = "end";
             }
-            if(currentIsland == Location.PARK){
+            if (currentIsland == Location.PARK) {
                 souls = FileUtils.getAllSouls().locations.get("park");
                 island = "park";
             }
-            if(currentIsland == Location.BARN){
+            if (currentIsland == Location.BARN) {
                 souls = FileUtils.getAllSouls().locations.get("farming");
                 island = "farming";
             }
-            if(currentIsland == Location.GOLD_MINE){
+            if (currentIsland == Location.GOLD_MINE){
                 souls = FileUtils.getAllSouls().locations.get("gold");
                 island = "gold";
             }
-            if(currentIsland == Location.DUNGEON_HUB){
+            if (currentIsland == Location.DUNGEON_HUB) {
                 souls = FileUtils.getAllSouls().locations.get("dungeon_hub");
                 island = "dungeon_hub";
             }
-            if(currentIsland == Location.JERRY){
+            if (currentIsland == Location.JERRY) {
                 souls = FileUtils.getAllSouls().locations.get("winter");
                 island = "winter";
             }
         List<String> renderedSouls = checkSouls(souls);
-        for(String s : renderedSouls) {
+        for (String s : renderedSouls) {
             String[] coords = s.split(",");
             Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
             double viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * e.partialTicks ;
@@ -102,11 +102,11 @@ public class FairySouls {
                     y - viewerY + 256,
                     z  + 0.8 - viewerZ
             ).expand(0.01f, 0.01f, 0.01f);
-            OneColor c = Configuration.fairySoulColor;
+            OneColor c = Configuration.fairySoulWaypointsColor;
             c.setAlpha(102);
             RenderUtils.highlightBlock(new BlockPos(x, y, z), c.toJavaColor(), true, e.partialTicks);
             GlStateManager.disableCull();
-            Color fairySoulC = Configuration.fairySoulColor.toJavaColor();
+            Color fairySoulC = c.toJavaColor();
             Color fairySoulColor = new Color(fairySoulC.getRed(), fairySoulC.getGreen(), fairySoulC.getBlue(), 102);
             GlStateManager.disableDepth();
             RenderUtils.renderBeaconBeam(new BlockPos(x, y, z),fairySoulColor.getRGB(),1.0f,e.partialTicks);
@@ -119,7 +119,7 @@ public class FairySouls {
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent e){
-        if(StringUtils.stripControlCodes(e.message.getUnformattedText()).equalsIgnoreCase("SOUL! You found a Fairy Soul!")
+        if (StringUtils.stripControlCodes(e.message.getUnformattedText()).equalsIgnoreCase("SOUL! You found a Fairy Soul!")
         || StringUtils.stripControlCodes(e.message.getFormattedText()).equalsIgnoreCase("You already found that Fairy Soul!")
         ){
             System.out.println("Chat Recieved");
@@ -143,7 +143,7 @@ public class FairySouls {
                     soul = s;
                 }
             }
-            if(soul != null && !gainedSouls.contains(soul)){
+            if (soul != null && !gainedSouls.contains(soul)){
                 gainedSouls.add(soul);
                 soulData1.locations.put(island,gainedSouls);
                 soulData1.soulCount++;
@@ -154,7 +154,7 @@ public class FairySouls {
     private List<String> checkSouls(List<String> shownSouls) {
         List<String> souls = new ArrayList<>();
         FairySoulData data = FileUtils.getSoulData();
-            if(data != null) {
+            if (data != null) {
                 if (data.locations != null) {
                     if (data.locations.get(island) != null) {
                         for (String s : shownSouls) {
@@ -165,7 +165,7 @@ public class FairySouls {
                     }
                 }
             }
-            if(souls.isEmpty()){
+            if (souls.isEmpty()){
                 return shownSouls;
             }
         return souls;

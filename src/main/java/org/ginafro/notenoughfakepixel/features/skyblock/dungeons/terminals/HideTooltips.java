@@ -29,7 +29,8 @@ public class HideTooltips {
 
             if (chestName.equals("Click in order!") ||
                     chestName.startsWith("Select all the") ||
-                    chestName.startsWith("What starts with")) {
+                    chestName.startsWith("What starts with") ||
+                    chestName.contains("Complete the maze!")) {
                 event.toolTip.clear();
             }
         }
